@@ -58,6 +58,6 @@ client.on("guildMemberAdd", async (member) => {
         content: `<@${member.id}> Welcome to the server!`,
         files: [img]
     });
-});
+}); 
 
-client.login(process.env.TOKEN); // Authenticate bot with API token in ./.env
+client.login(process.env.TOKEN); // Authenticate bot with API token in ./.envs
