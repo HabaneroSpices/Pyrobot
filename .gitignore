@@ -1,4 +1,4 @@
-.env
+config/discord.json
 .vscode
 package-lock.json
 node_modules/

@@ -1,21 +1,34 @@
-require("dotenv").config();
+// Setup.
+//
+
+const log = require("fancy-log");
 const Discord = require("discord.js");
-
 const generateImage = require("./generateImage.js");
+const packagejson = require('./package.json');
+const discordConfig = require('./config/discord.json');
 
-const client = new Discord.Client({
-    intents: [
-        "GUILDS",
-        "GUILD_MESSAGES",
-        "GUILD_MEMBERS"
-    ]
-});
-const prefix = process.env.PREFIX;
-const token = process.env.TOKEN;
+const client = new Discord.Client({intents: ["GUILDS","GUILD_MESSAGES","GUILD_MEMBERS"]});
+
+const prefix = discordConfig.prefix;
+const token = discordConfig.token;
+
+// The funky stuff
+//
 
 client.once("ready", () => { // Get ready status and log it.
-    console.log(`\u{2714} ${client.user.tag} is online.`);
+    //console.log(`\u{2714} ${client.user.tag} is online.`);
+    // success(`${client.user.tag} version ${packagejson.version} is online.`);
+    log(`${client.user.tag} version ${packagejson.version} is online.`)
 });
+
+client.once('reconnecting', () => {
+    log('Reconnecting!');
+});
+
+client.once('disconnect', () => {
+    log('Disconnect!');
+});
+
 
 // Basic bot command handling.
 client.on("messageCreate", message => {
@@ -48,16 +61,17 @@ client.on("messageCreate", message => {
             message.reply(`Invalid command. Try ${prefix}commands`);
             return;
     }  
-    console.log(`User ${message.author} ran ${command.action} -- ${command.body}`);
+    log(`User ${message.author} ran ${command.action} -- ${command.body}`);
 });
 
 // Create a Welcome message with a custom image every time a new member joins the server.
 client.on("guildMemberAdd", async (member) => { 
     const img = await generateImage(member)
-    member.guild.channels.cache.get(process.env.WELCOME_CHANNEL_ID).send({
+    member.guild.channels.cache.get(discordConfig.welcome_channel_id).send({
         content: `<@${member.id}> Welcome to the server!`,
         files: [img]
     });
+    //TODO Give default roles to new user.
 }); 
 
-client.login(process.env.TOKEN); // Authenticate bot with API token in ./.envs
+client.login(token); // Authenticate bot with API token in ./.envs

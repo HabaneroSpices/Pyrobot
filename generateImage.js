@@ -1,7 +1,8 @@
 const Canvas = require("canvas")
 const Discord = require("discord.js");
+const discordConfig = require('./config/discord.json');
 
-const background = process.env.LEVELUPBACKGROUND
+const background = discordConfig.level_up_bg;
 
 const dim = {
     height: 675,
